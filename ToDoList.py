@@ -79,7 +79,7 @@ class ToDoList:
         """
         self._tasks[taskNum - 1][option] = newValue
 
-    def displayTasks(self) -> None:
+    def displayTasks(self) -> int:
         """
         Displays all the tasks in the to-do list.
         :return: 0 if there are no tasks in to-do list or 1 otherwise
