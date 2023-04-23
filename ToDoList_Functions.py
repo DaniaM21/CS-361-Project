@@ -1,4 +1,7 @@
 import time
+from ToDoList import ToDoList
+
+toDoLists = {}
 
 def startMenu():
     print('***** Start Menu *****')
@@ -14,12 +17,13 @@ def createList():
     print(f'Your new To-Do list will be called {listName}.')
     option = int(input('Enter 1 to Save or 2 to Cancel: '))
     if option == 1:
+        toDoLists[listName] = ToDoList(listName)
         print(f'{listName} saved successfully')
     elif option == 2:
         print(f'{listName} was not saved')
-    print('Returning to Start Menu ...')
     print('*********************************')
-    time.sleep(2)
+    print('Returning to Start Menu ...')
+    time.sleep(1)
 
 def addTask(listName):
     print('***** Add Task *****')
@@ -36,6 +40,7 @@ def addTask(listName):
     print('***')
     option = int(input('Enter 1 to Save task or 2 to Cancel: '))
     if option == 1:
+        toDoLists[listName].addTask(taskName, dueDate, priority, taskNotes)
         print(f'{taskName} added to {listName} successfully.')
     elif option == 2:
         print(f'{taskName} was not saved')
@@ -44,112 +49,142 @@ def addTask(listName):
     if option == 1:
         print('Returning to Edit Menu ...')
         time.sleep(1)
-        editMenu()
+        editMenu(listName)
     elif option == 2:
         print('Returning to Start Menu ...')
-        time.sleep(2)
+        time.sleep(1)
 
 def deleteTask(listName):
     print('***** Delete Task *****')
     print('***')
-    print(f'Contents of {listName} printed')
-    print('***')
-    print('Enter the number next to the task you want to delete: ')
-    option = input('Are you sure you want to delete this task? (yes/no): ')
-    option = option.lower()
-    if option == 'yes':
-        print('Task deleted successfully.')
-    if option == 'no':
-        print('Task was not deleted.')
+    print(f'{toDoLists[listName].name}:')
+    if toDoLists[listName].displayTasks() == 0:
+        print('***')
+        print('Add tasks to your list before you can delete anything.')
+    else:
+        print('***')
+        task = int(input('Enter the number next to the task you want to delete: '))
+        option = input('Are you sure you want to delete this task? (yes/no): ')
+        option = option.lower()
+        if option == 'yes':
+            toDoLists[listName].deleteTask(task)
+            print('Task deleted successfully.')
+        if option == 'no':
+            print('Task was not deleted.')
     print('***********************')
     option = int(input('Enter 1 to return to Edit Menu or 2 to return to Start Menu: '))
     if option == 1:
         print('Returning to Edit Menu ...')
         time.sleep(1)
-        editMenu()
+        editMenu(listName)
     elif option == 2:
         print('Returning to Start Menu ...')
-        time.sleep(2)
+        time.sleep(1)
 
 def completeTask(listName):
     print('***** Mark Task as Complete *****')
     print('***')
-    print(f'Contents of {listName} printed')
-    print('***')
-    print('Enter the number next to the task you want to mark as complete: ')
-    option = input('Are you sure you want to mark this task as complete? (yes/no): ')
-    option = option.lower()
-    if option == 'yes':
-        print('Task marked as complete.')
-    if option == 'no':
-        print('Task was not marked as completed.')
+    print(f'{toDoLists[listName].name}:')
+    if toDoLists[listName].displayTasks() == 0:
+        print('***')
+        print('Add tasks to your list before you can check anything off.')
+    else:
+        print('***')
+        task = int(input('Enter the number next to the task you want to mark as complete: '))
+        option = input('Are you sure you want to mark this task as complete? (yes/no): ')
+        option = option.lower()
+        if option == 'yes':
+            toDoLists[listName].completeTask(task)
+            print('Task marked as complete.')
+        if option == 'no':
+            print('Task was not marked as completed.')
     print('*********************************')
     option = int(input('Enter 1 to return to Edit Menu or 2 to return to Start Menu: '))
     if option == 1:
         print('Returning to Edit Menu ...')
         time.sleep(1)
-        editMenu()
+        editMenu(listName)
     elif option == 2:
         print('Returning to Start Menu ...')
-        time.sleep(2)
+        time.sleep(1)
 
 def editTaskIntro(listName):
     print('***** Edit Task *****')
     print('***')
-    print(f'Contents of {listName} printed')
-    print('***')
+    print(f'{toDoLists[listName].name}:')
+    if toDoLists[listName].displayTasks() == 0:
+        print('***')
+        print('Add tasks to your list before you can edit anything.')
+        option = int(input('Enter 1 to return to Edit Menu or 2 to return to Start Menu: '))
+        if option == 1:
+            print('Returning to Edit Menu ...')
+            time.sleep(1)
+            editMenu(listName)
+        elif option == 2:
+            print('Returning to Start Menu ...')
+            time.sleep(1)
+    else:
+        print('***')
+        task = int(input('Enter the number next to the task you want to edit: '))
+        editTask(listName, task)
 
-def editTask(listName):
-    print('Enter the number next to the task you want to edit: ')
+def editTask(listName, task):
     print('***')
-    print('1. Name: ')
-    print('2. Due Date: ')
-    print('3. Priority: ')
-    print('4. Task Notes: ')
+    print(f'1. Name: {toDoLists[listName].getTaskName(task)}')
+    print(f'2. Due Date: {toDoLists[listName].getTaskDueDate(task)}')
+    print(f'3. Priority: {toDoLists[listName].getTaskPriority(task)}')
+    print(f'4. Additional Notes: {toDoLists[listName].getTaskNotes(task)}')
     print('***')
     option = int(input('Enter the number next to the item you want to edit: '))
     if option == 1:
         taskName = input('Name of Task: ')
+        toDoLists[listName].editTask(task, 'taskName', taskName)
         print(f'Task name changed to {taskName}')
     elif option == 2:
         dueDate = input('Due Date: ')
+        toDoLists[listName].editTask(task, 'dueDate', dueDate)
         print(f'Due date changed to {dueDate}')
     elif option == 3:
         priority = input('Priority (Low/Med/High): ')
+        toDoLists[listName].editTask(task, 'priority', priority)
         print(f'Priority changed to {priority}')
     elif option == 4:
         taskNotes = input('Additional Notes: ')
+        toDoLists[listName].editTask(task, 'taskNotes', taskNotes)
         print(f'Task notes changed to: {taskNotes}')
     print('*********************')
     option = int(input('Enter 1 to edit another part of the task, 2 to return to Edit Menu, or 3 to return to Start Menu: '))
     if option == 1:
-        time.sleep(1)
-        editTask(listName)
+        editTask(listName, task)
     elif option == 2:
         print('Returning to Edit Menu ...')
         time.sleep(1)
         editMenu(listName)
     elif option == 3:
         print('Returning to Start Menu ...')
-        time.sleep(2)
+        time.sleep(1)
         
 def deleteList(listName):
     print('***** Delete To-Do List *****')
     option = input(f'Are you sure you want to delete {listName}? (yes/no): ')
     option = option.lower()
     if option == 'yes':
-        print('List deleted successfully.')
-    if option == 'no':
-        print('List was not deleted.')
-    print('*****************************')
-    option = int(input('Enter 1 to return to Edit Menu or 2 to return to Start Menu: '))
-    if option == 1:
-        print('Returning to Edit Menu ...')
-        time.sleep(1)
-        editMenu()
-    elif option == 2:
+        del toDoLists[listName]
+        print(f'{listName} deleted successfully.')
+        print('*****************************')
         print('Returning to Start Menu ...')
-        time.sleep(2)
+        time.sleep(1)
+    elif option == 'no':
+        print(f'{listName} was not deleted.')
+        print('*****************************')
+        option = int(input('Enter 1 to return to Edit Menu or 2 to return to Start Menu: '))
+        if option == 1:
+            print('Returning to Edit Menu ...')
+            time.sleep(1)
+            editMenu(listName)
+        elif option == 2:
+            print('Returning to Start Menu ...')
+            time.sleep(1)
 
 def editMenu(listName):
     print('***** Edit Menu *****')
@@ -162,45 +197,50 @@ def editMenu(listName):
     print('*********************')
     option = int(input('Enter the number next to the option in the Edit Menu to perform that function: '))
     if option == 1:
-        time.sleep(1)
         addTask(listName)
     elif option == 2:
-        time.sleep(1)
         deleteTask(listName)
     elif option == 3:
-        time.sleep(1)
         completeTask(listName)
     elif option == 4:
-        time.sleep(1)
         editTaskIntro(listName)
-        editTask(listName)
     elif option == 5:
-        time.sleep(1)
         deleteList(listName)
     elif option == 6:
         print('Returning to Start Menu ...')
-        time.sleep(2)
+        time.sleep(1)
 
 def searchLists():
     print('***** Search for a To-Do List *****')
     listName = input('Enter name of To-Do list: ')
     print('Searching ...')
-    time.sleep(2)
-    print(f'Contents of {listName} printed')
+    time.sleep(1)
+    if listName not in toDoLists:
+        print(f'Could not find {listName} in your To-Do lists.')
+    else:
+        print('***')
+        print(f'{toDoLists[listName].name}:')
+        toDoLists[listName].displayTasks()
+        print('***')
+    print('***********************************')
     option = int(input('Enter 1 to enter Edit Menu or 2 to return to Start Menu: '))
     if option == 1:
-        print('***********************************')
-        time.sleep(1)
         editMenu(listName)
     elif option == 2:
         print('Returning to Start Menu ...')
-        print('***********************************')
-        time.sleep(2)
+        time.sleep(1)
 
 def viewLists():
     print('***** View All To-Do Lists *****')
-    print('To-Do lists printed')
+    if len(toDoLists) == 0:
+        print('no to-do lists to display')
+    else:
+        for list in toDoLists:
+            print('***')
+            print(f'{toDoLists[list].name}:')
+            toDoLists[list].displayTasks()
+            print('***')
     print('********************************')
-    input('Press any key to return to Start Menu:')
+    input('Press any key to return to Start Menu: ')
     print('Returning to Start Menu ...')
-    time.sleep(2)
+    time.sleep(1)
