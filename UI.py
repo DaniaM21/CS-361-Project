@@ -16,6 +16,8 @@ while True:
     elif option == 3:
         viewLists()
     elif option == 4:
+        viewTasksByDate()
+    elif option == 5:
         exit()
     else:
         print('Invalid option. Please try again.')
