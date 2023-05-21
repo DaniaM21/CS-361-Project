@@ -1,15 +1,18 @@
 import time
+import requests
 from ToDoList import ToDoList
 
 toDoLists = {}
 
 def startMenu():
     """Displays the Start Menu"""
+    print('\n')
     print('***** Start Menu *****')
     print('1. Create New To-Do List')
     print('2. Search for a To-Do List')
     print('3. View All To-Do Lists')
-    print('4. Exit')
+    print('4. View All Tasks Organized by Date')
+    print('5. Exit')
     print('**********************')
 
 def returnToMenu(listName):
@@ -25,6 +28,7 @@ def returnToMenu(listName):
 
 def createList():
     """Creates a new To-Do list"""
+    print('\n')
     print('***** Create New To-Do List *****')
     
     listName = input('Enter name of To-Do list: ')
@@ -44,10 +48,11 @@ def createList():
 
 def addTask(listName):
     """Adds a task to a To-Do list"""
+    print('\n')
     print('***** Add Task *****')
     
     taskName = input('Name of Task: ')
-    dueDate = input('Due Date: ')
+    dueDate = input('Due Date (YYYY-MM-DD): ')
     priority = input('Priority (Low/Med/High): ')
     taskNotes = input('Additional Notes: ')
     
@@ -72,6 +77,7 @@ def addTask(listName):
 
 def deleteTask(listName):
     """Deletes a task from a To-Do list"""
+    print('\n')
     print('***** Delete Task *****')
     
     print('***')
@@ -99,6 +105,7 @@ def deleteTask(listName):
 
 def completeTask(listName):
     """Marks a task as Complete"""
+    print('\n')
     print('***** Mark Task as Complete *****')
     
     print('***')
@@ -126,6 +133,7 @@ def completeTask(listName):
 
 def editTaskIntro(listName):
     """Intro for Edit Task option"""
+    print('\n')
     print('***** Edit Task *****')
     
     print('***')
@@ -185,6 +193,7 @@ def editTask(listName, task):
         
 def deleteList(listName):
     """Deletes a To-Do list"""
+    print('\n')
     print('***** Delete To-Do List *****')
     
     option = input(f'Are you sure you want to delete {listName}? (yes/no): ')
@@ -203,6 +212,7 @@ def deleteList(listName):
 
 def editMenu(listName):
     """Displays Edit Menu"""
+    print('\n')
     print('***** Edit Menu *****')
     print('1. Add Task')
     print('2. Delete Task')
@@ -229,6 +239,7 @@ def editMenu(listName):
 
 def searchLists():
     """Searches for a To-Do list by name"""
+    print('\n')
     print('***** Search for a To-Do List *****')
     
     listName = input('Enter name of To-Do list: ')
@@ -250,6 +261,7 @@ def searchLists():
 
 def viewLists():
     """Displays all To-Do lists"""
+    print('\n')
     print('***** View All To-Do Lists *****')
     
     if len(toDoLists) == 0:
@@ -263,6 +275,43 @@ def viewLists():
     
     print('********************************')
     
+    input('Press any key to return to Start Menu: ')
+    print('Returning to Start Menu ...')
+    time.sleep(1)
+
+def viewTasksByDate():
+    """Displays tasks from every To-Do list organized by date (Microservice)"""
+    print('\n')
+    print('***** View All Tasks Organized by Date *****')
+    
+    if len(toDoLists) == 0:
+        print('no tasks to display')
+    else:
+        try:
+            url = 'http://localhost:3000/organize'
+            
+            to_do_list_data = []
+
+            for list in toDoLists:
+                to_do_list_data += toDoLists[list].getDueDatesAndTasks()
+
+            response = requests.post(url + '?sortDates=true', json=to_do_list_data)
+            organized_tasks = response.json()
+        
+            for date in organized_tasks:
+                print('***')
+                print(date)
+                for list in organized_tasks[date]:
+                    print(f'   {list}:')
+                    for task in organized_tasks[date][list]:
+                        print(f'    - {task}')
+                print('***')
+                print('\n')
+        except:
+            print('The microservice must be running before this option can be used.')
+    
+    print('********************************************')
+
     input('Press any key to return to Start Menu: ')
     print('Returning to Start Menu ...')
     time.sleep(1)
