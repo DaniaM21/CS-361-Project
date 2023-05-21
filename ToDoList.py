@@ -45,7 +45,7 @@ class ToDoList:
         """
         Adds a task to the to-do list.
         :param taskName: name of task
-        :param dueDate: date task is due
+        :param dueDate: date task is due (YYYY-MM-DD)
         :param priority: priority of task (high/med/low)
         :param taskNotes: any additional task notes
         :return: None
@@ -98,3 +98,21 @@ class ToDoList:
                 status = self._tasks[i]['status']
                 print(f'   {i + 1}. {taskName} - Due Date: {dueDate}, Priority: {priority}, Additional Notes: {taskNotes}, Status: {status}')
             return 1
+        
+    def getDueDatesAndTasks(self) -> list:
+        """
+        Returns a list of all the tasks separated by due date.
+        :return: [{'dueDate': 'YYYY-MM-DD', 'todoListName': 'Name', 'tasks': ['task1, etc]}]
+        """
+        to_do_list_data = []
+        dueDates = {}
+
+        for i in range(len(self._tasks)):
+            if self._tasks[i]['dueDate'] not in dueDates:
+                dueDates[self._tasks[i]['dueDate']] = i
+                to_do_list_data.append({'dueDate': self._tasks[i]['dueDate'], 'todoListName': self.name, 'tasks': [self._tasks[i]['taskName']]})
+            else:
+                index = dueDates[self._tasks[i]['dueDate']]
+                to_do_list_data[index]['tasks'].append(self._tasks[i]['taskName'])
+
+        return to_do_list_data
