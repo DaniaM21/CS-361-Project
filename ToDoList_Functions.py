@@ -306,7 +306,6 @@ def viewTasksByDate():
                     for task in organized_tasks[date][list]:
                         print(f'    - {task}')
                 print('***')
-                print('\n')
         except:
             print('The microservice must be running before this option can be used.')
     
