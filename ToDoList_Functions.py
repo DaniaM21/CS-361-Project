@@ -17,7 +17,7 @@ def startMenu():
 
 def returnToMenu(listName):
     """Returns user to Edit or Start Menu"""
-    return_option = int(input('Enter 1 to return to Edit Menu or 2 to return to Start Menu: '))
+    return_option = int(input('Enter 1 to enter Edit Menu or 2 to return to Start Menu: '))
     if return_option == 1:
         print('Returning to Edit Menu ...')
         time.sleep(1)
@@ -43,8 +43,7 @@ def createList():
     
     print('*********************************')
     
-    print('Returning to Start Menu ...')
-    time.sleep(1)
+    returnToMenu(listName)
 
 def addTask(listName):
     """Adds a task to a To-Do list"""
